@@ -2,9 +2,10 @@ import {TestBed, ComponentFixture} from '@angular/core/testing';
 import {Component} from '@angular/core';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {By} from '@angular/platform-browser';
-import {TypeaheadDirective} from './typeahead.directive';
 import {CommonModule} from '@angular/common';
-import {TypeaheadItemsComponent} from './typeahead-items.component';
+import {TypeaheadStrategy} from './typeahead-strategy';
+import {TypeaheadBuilder} from './typeahead-builder';
+import {TypeaheadModule} from './typeahead.module';
 
 describe('Directive: Typeahead', () => {
   let fixture: ComponentFixture<TestComponent>;
@@ -13,12 +14,11 @@ describe('Directive: Typeahead', () => {
     TestBed.configureTestingModule({
       declarations: [
         TestComponent,
-        TypeaheadDirective,
-        TypeaheadItemsComponent,
       ],
       imports: [
+        TypeaheadModule,
+
         ReactiveFormsModule,
-        CommonModule
       ]
     });
 
@@ -53,10 +53,15 @@ describe('Directive: Typeahead', () => {
 
 @Component({
   template: `
-    <input type="text" typeahead [formControl]="stateControl"/>
-    <typeahead-items></typeahead-items>
+    <input type="text" typeahead="typeahead" [formControl]="stateControl"/>
+    <typeahead-items [strategy]="typeahead"></typeahead-items>
 `
 })
 class TestComponent {
   stateControl = new FormControl(null, Validators.required);
+  typeahead: TypeaheadStrategy;
+
+  constructor(tb: TypeaheadBuilder) {
+    this.typeahead = tb.fixedList(['foobar', 'foobaz']);
+  }
 }
