@@ -1,8 +1,7 @@
 import {TestBed, ComponentFixture} from '@angular/core/testing';
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {By} from '@angular/platform-browser';
-import {CommonModule} from '@angular/common';
 import {TypeaheadStrategy} from './typeahead-strategy';
 import {TypeaheadBuilder} from './typeahead-builder';
 import {TypeaheadModule} from './typeahead.module';
@@ -41,27 +40,43 @@ describe('Directive: Typeahead', () => {
     expect(fixture.componentInstance.stateControl.valid).toBe(true);
   });
 
-  it('displays a list of matches', () => {
+  it('displays a list of filtered matches', () => {
     let typeaheadItemsEl = fixture.debugElement.query(By.css('.typeahead-items'));
     expect(typeaheadItemsEl.nativeElement).not.toBeNull();
+
+    let inputEl = fixture.debugElement.query(By.css('input'));
+    inputEl.nativeElement.value = 'foo';
+    inputEl.nativeElement.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
 
     expect(typeaheadItemsEl.children.length).toBe(2);
     expect(typeaheadItemsEl.children[0].nativeElement.textContent).toEqual('foobar');
     expect(typeaheadItemsEl.children[1].nativeElement.textContent).toEqual('foobaz');
+
+    inputEl.nativeElement.value = 'foobar';
+    inputEl.nativeElement.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(typeaheadItemsEl.children.length).toBe(1);
+    expect(typeaheadItemsEl.children[0].nativeElement.textContent).toEqual('foobar');
   });
 });
 
 @Component({
   template: `
-    <input type="text" typeahead="typeahead" [formControl]="stateControl"/>
-    <typeahead-items [strategy]="typeahead"></typeahead-items>
+    <input type="text" typeahead [formControl]="stateControl"/>
+    <typeahead-items [strategy]="strategy"></typeahead-items>
 `
 })
-class TestComponent {
+class TestComponent implements OnInit {
   stateControl = new FormControl(null, Validators.required);
-  typeahead: TypeaheadStrategy;
+  strategy: TypeaheadStrategy;
 
   constructor(tb: TypeaheadBuilder) {
-    this.typeahead = tb.fixedList(['foobar', 'foobaz']);
+    this.strategy = tb.constantList(['foobar', 'foobaz']);
+  }
+
+  ngOnInit(): void {
+    this.stateControl.valueChanges.subscribe(v => this.strategy.setQuery(v));
   }
 }
