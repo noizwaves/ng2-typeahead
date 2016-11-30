@@ -8,6 +8,7 @@ import {TypeaheadModule} from './typeahead.module';
 
 describe('Directive: Typeahead', () => {
   let fixture: ComponentFixture<TestComponent>;
+  let page: TestComponentPage;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -16,49 +17,37 @@ describe('Directive: Typeahead', () => {
       ],
       imports: [
         TypeaheadModule,
-
         ReactiveFormsModule,
       ]
     });
 
     fixture = TestBed.createComponent(TestComponent);
+    page = new TestComponentPage(fixture);
+
     fixture.detectChanges();
   });
 
   it('accepts any text as input', () => {
-    let inputEl = fixture.debugElement.query(By.css('input'));
-
-    inputEl.nativeElement.value = 'Foobar';
-    inputEl.nativeElement.dispatchEvent(new Event('input'));
-
+    page.fillStateInput('Foobar');
     fixture.detectChanges();
 
-    let stateControl = fixture.componentInstance.stateControl;
-    expect(stateControl.value).toBe('Foobar');
-    expect(stateControl.valid).toBe(true);
-
-    expect(fixture.componentInstance.stateControl.valid).toBe(true);
+    page.expectControlHasValue('Foobar');
+    page.expectHasValidControl();
   });
 
   it('displays a list of filtered matches', () => {
     let typeaheadItemsEl = fixture.debugElement.query(By.css('.typeahead-items'));
     expect(typeaheadItemsEl.nativeElement).not.toBeNull();
 
-    let inputEl = fixture.debugElement.query(By.css('input'));
-    inputEl.nativeElement.value = 'foo';
-    inputEl.nativeElement.dispatchEvent(new Event('input'));
+    page.fillStateInput('foo');
     fixture.detectChanges();
 
-    expect(typeaheadItemsEl.children.length).toBe(2);
-    expect(typeaheadItemsEl.children[0].nativeElement.textContent).toEqual('foobar');
-    expect(typeaheadItemsEl.children[1].nativeElement.textContent).toEqual('foobaz');
+    page.expectItemsToEqual(['foobar', 'foobaz']);
 
-    inputEl.nativeElement.value = 'foobar';
-    inputEl.nativeElement.dispatchEvent(new Event('input'));
+    page.fillStateInput('foobar');
     fixture.detectChanges();
 
-    expect(typeaheadItemsEl.children.length).toBe(1);
-    expect(typeaheadItemsEl.children[0].nativeElement.textContent).toEqual('foobar');
+    page.expectItemsToEqual(['foobar']);
   });
 });
 
@@ -78,5 +67,32 @@ class TestComponent implements OnInit {
 
   ngOnInit(): void {
     this.stateControl.valueChanges.subscribe(v => this.strategy.setQuery(v));
+  }
+}
+
+class TestComponentPage {
+  constructor(private fixture: ComponentFixture<TestComponent>) {
+  }
+
+  public fillStateInput(value: string) {
+    let inputEl = this.fixture.debugElement.query(By.css('input'));
+    inputEl.nativeElement.value = value;
+    inputEl.nativeElement.dispatchEvent(new Event('input'));
+  }
+
+  public expectHasValidControl() {
+    let stateControl = this.fixture.componentInstance.stateControl;
+    expect(stateControl.valid).toBe(true);
+  }
+
+  public expectControlHasValue(value: string) {
+    let stateControl = this.fixture.componentInstance.stateControl;
+    expect(stateControl.value).toBe(value);
+  }
+
+  public expectItemsToEqual(expectedItems: string[]) {
+    let typeaheadItemsEl = this.fixture.debugElement.query(By.css('.typeahead-items'));
+    let items = typeaheadItemsEl.children.map(de => de.nativeElement.textContent);
+    expect(items).toEqual(expectedItems);
   }
 }
