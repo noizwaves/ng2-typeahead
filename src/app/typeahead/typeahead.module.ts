@@ -18,6 +18,9 @@ import {CommonModule} from '@angular/common';
   exports: [
     TypeaheadDirective,
     TypeaheadItemsComponent,
+  ],
+  entryComponents: [
+    TypeaheadItemsComponent,
   ]
 })
 export class TypeaheadModule {}
