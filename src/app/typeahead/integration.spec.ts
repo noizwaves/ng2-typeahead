@@ -1,5 +1,5 @@
 import {TestBed, ComponentFixture} from '@angular/core/testing';
-import {Component, NgModule} from '@angular/core';
+import {Component, NgModule, DebugElement} from '@angular/core';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {TypeaheadStrategy} from './typeahead-strategy';
@@ -57,6 +57,20 @@ describe('Directive: Typeahead', () => {
     page.expectItemsToEqual(['foobar']);
   });
 
+  it('selects a value when item is clicked', () => {
+    page.fillStateInput('foo');
+    fixture.detectChanges();
+
+    page.clickItemByValue('foobar');
+    fixture.detectChanges();
+
+    page.expectHasValidControl();
+    page.expectControlHasValue('foobar');
+
+    page.expectTypeaheadItemsPresent();
+    page.expectItemsToEqual([]);
+  });
+
   it('displays items if not explicitly included', () => {
     fixture = TestBed.createComponent(TestComponentWithoutItems);
     page = new TestComponentPage(fixture);
@@ -108,6 +122,17 @@ class TestComponentPage {
     let inputEl = this.fixture.debugElement.query(By.css('input'));
     inputEl.nativeElement.value = value;
     inputEl.nativeElement.dispatchEvent(new Event('input'));
+  }
+
+  public clickItemByValue(value: string) {
+    let typeaheadItemsEl = this.fixture.debugElement.query(By.css('.typeahead-items'));
+    let typeaheadItemEl = typeaheadItemsEl.children
+      .filter((itemEl:DebugElement) => itemEl.nativeElement.textContent === value)[0];
+
+    expect(typeaheadItemEl).not.toBeNull();
+
+    typeaheadItemEl.nativeElement.click();
+
   }
 
   public expectHasValidControl() {

@@ -5,10 +5,14 @@ import {TypeaheadStrategy} from './typeahead-strategy';
   selector: 'typeahead-items',
   template: `
     <div class="typeahead-items">
-      <div *ngFor="let item of strategy.items | async">{{item}}</div>
+      <div *ngFor="let item of strategy.items | async" (click)="onItemClick(item)">{{item}}</div>
     </div>`,
 
 })
 export class TypeaheadItemsComponent {
   @Input('strategy') strategy:TypeaheadStrategy;
+
+  private onItemClick(item: string) {
+    this.strategy.setValue(item);
+  }
 }
