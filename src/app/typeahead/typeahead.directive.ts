@@ -1,6 +1,11 @@
 import {
-  Directive, OnInit, Input, OnDestroy, ElementRef, ViewContainerRef,
-  ComponentFactoryResolver, ComponentRef
+  Directive,
+  OnInit,
+  Input,
+  OnDestroy,
+  ElementRef,
+  ViewContainerRef,
+  ComponentFactoryResolver
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {TypeaheadStrategy} from './typeahead-strategy';
@@ -16,11 +21,9 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
 
   private subscription: Subscription = null;
 
-  constructor(
-    private elementRef: ElementRef,
-    private viewContainerRef: ViewContainerRef,
-    private componentFactoryResolver: ComponentFactoryResolver
-  ) {
+  constructor(private elementRef: ElementRef,
+              private viewContainerRef: ViewContainerRef,
+              private componentFactoryResolver: ComponentFactoryResolver) {
   }
 
   ngOnInit(): void {
@@ -34,7 +37,7 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
 
     this.subscription = this.formControl.valueChanges.subscribe(v => this.strategy.setQuery(v));
 
-    if(!this.elementRef.nativeElement.nextElementSibling) {
+    if (!this.elementRef.nativeElement.nextElementSibling) {
       this.attachItemsComponent();
     }
 
@@ -53,6 +56,6 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
     let componentRef = this.viewContainerRef.createComponent(cf);
     componentRef.instance.strategy = this.strategy;
 
-    this.elementRef.nativeElement.append(componentRef.location.nativeElement);
+    this.elementRef.nativeElement.parentElement.insertBefore(componentRef.location.nativeElement, null);
   }
 }
