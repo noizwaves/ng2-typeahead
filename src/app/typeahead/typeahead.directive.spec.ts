@@ -5,7 +5,8 @@ import {TypeaheadStrategy} from './typeahead-strategy';
 describe('TypeaheadDirective', () => {
   describe('initialisation', () => {
     it('throws exception when "strategy" input is not provided', () => {
-      let directive = new TypeaheadDirective();
+      let directive = new TypeaheadDirective(null, null, null);
+
       directive.formControl = {} as FormControl;
       directive.strategy = null;
 
@@ -17,7 +18,7 @@ describe('TypeaheadDirective', () => {
     });
 
     it('throws exception when "formControl" input is not provided', () => {
-      let directive = new TypeaheadDirective();
+      let directive = new TypeaheadDirective(null, null, null);
       directive.formControl = null;
       directive.strategy = {} as TypeaheadStrategy;
 

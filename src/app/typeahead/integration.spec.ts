@@ -1,27 +1,35 @@
 import {TestBed, ComponentFixture} from '@angular/core/testing';
-import {Component} from '@angular/core';
+import {Component, NgModule} from '@angular/core';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {TypeaheadStrategy} from './typeahead-strategy';
 import {TypeaheadBuilder} from './typeahead-builder';
 import {TypeaheadModule} from './typeahead.module';
+import {TypeaheadItemsComponent} from './typeahead-items.component';
 
 describe('Directive: Typeahead', () => {
-  let fixture: ComponentFixture<TestComponent>;
+  let fixture: ComponentFixture<TestComponentWithItems>;
   let page: TestComponentPage;
 
   beforeEach(() => {
+    @NgModule({
+      entryComponents: [TypeaheadItemsComponent]
+    })
+    class TestModule {}
+
     TestBed.configureTestingModule({
       declarations: [
-        TestComponent,
+        TestComponentWithItems,
+        TestComponentWithoutItems
       ],
       imports: [
         TypeaheadModule,
         ReactiveFormsModule,
+        TestModule,
       ]
     });
 
-    fixture = TestBed.createComponent(TestComponent);
+    fixture = TestBed.createComponent(TestComponentWithItems);
     page = new TestComponentPage(fixture);
 
     fixture.detectChanges();
@@ -36,8 +44,7 @@ describe('Directive: Typeahead', () => {
   });
 
   it('displays a list of filtered matches', () => {
-    let typeaheadItemsEl = fixture.debugElement.query(By.css('.typeahead-items'));
-    expect(typeaheadItemsEl.nativeElement).not.toBeNull();
+    page.expectTypeaheadItemsPresent();
 
     page.fillStateInput('foo');
     fixture.detectChanges();
@@ -49,6 +56,19 @@ describe('Directive: Typeahead', () => {
 
     page.expectItemsToEqual(['foobar']);
   });
+
+  it('displays items if not explicitly included', () => {
+    fixture = TestBed.createComponent(TestComponentWithoutItems);
+    page = new TestComponentPage(fixture);
+    fixture.detectChanges();
+
+    page.expectTypeaheadItemsPresent();
+
+    page.fillStateInput('foo');
+    fixture.detectChanges();
+
+    page.expectItemsToEqual(['foobar', 'foobaz']);
+  });
 });
 
 @Component({
@@ -57,7 +77,21 @@ describe('Directive: Typeahead', () => {
     <typeahead-items [strategy]="strategy"></typeahead-items>
 `
 })
-class TestComponent {
+class TestComponentWithItems {
+  stateControl = new FormControl(null, Validators.required);
+  strategy: TypeaheadStrategy;
+
+  constructor(tb: TypeaheadBuilder) {
+    this.strategy = tb.constantList(['foobar', 'foobaz']);
+  }
+}
+
+@Component({
+  template: `
+    <input type="text" [typeahead]="strategy" [formControl]="stateControl"/>
+`
+})
+class TestComponentWithoutItems {
   stateControl = new FormControl(null, Validators.required);
   strategy: TypeaheadStrategy;
 
@@ -67,7 +101,7 @@ class TestComponent {
 }
 
 class TestComponentPage {
-  constructor(private fixture: ComponentFixture<TestComponent>) {
+  constructor(private fixture: ComponentFixture<TestComponentWithItems|TestComponentWithoutItems>) {
   }
 
   public fillStateInput(value: string) {
@@ -79,6 +113,11 @@ class TestComponentPage {
   public expectHasValidControl() {
     let stateControl = this.fixture.componentInstance.stateControl;
     expect(stateControl.valid).toBe(true);
+  }
+
+  public expectTypeaheadItemsPresent() {
+    let typeaheadItemsEl = this.fixture.debugElement.query(By.css('.typeahead-items'));
+    expect(typeaheadItemsEl.nativeElement).not.toBeNull();
   }
 
   public expectControlHasValue(value: string) {

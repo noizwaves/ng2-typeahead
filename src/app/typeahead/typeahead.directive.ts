@@ -1,7 +1,11 @@
-import {Directive, OnInit, Input, OnDestroy} from '@angular/core';
+import {
+  Directive, OnInit, Input, OnDestroy, ElementRef, ViewContainerRef,
+  ComponentFactoryResolver, ComponentRef
+} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {TypeaheadStrategy} from './typeahead-strategy';
 import {Subscription} from 'rxjs/Rx';
+import {TypeaheadItemsComponent} from './typeahead-items.component';
 
 @Directive({
   selector: '[typeahead]'
@@ -11,6 +15,13 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
   @Input('formControl') formControl: FormControl;
 
   private subscription: Subscription = null;
+
+  constructor(
+    private elementRef: ElementRef,
+    private viewContainerRef: ViewContainerRef,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {
+  }
 
   ngOnInit(): void {
     if (!this.strategy) {
@@ -22,11 +33,24 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
     }
 
     this.subscription = this.formControl.valueChanges.subscribe(v => this.strategy.setQuery(v));
+
+    if(!this.elementRef.nativeElement.nextElementSibling) {
+      this.attachItemsComponent();
+    }
   }
 
   ngOnDestroy(): void {
     if (!this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  private attachItemsComponent() {
+    let cf = this.componentFactoryResolver.resolveComponentFactory(TypeaheadItemsComponent);
+
+    let componentRef = this.viewContainerRef.createComponent(cf);
+    componentRef.instance.strategy = this.strategy;
+
+    this.elementRef.nativeElement.append(componentRef.location.nativeElement);
   }
 }
