@@ -1,5 +1,5 @@
 import {TestBed, ComponentFixture} from '@angular/core/testing';
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {TypeaheadStrategy} from './typeahead-strategy';
@@ -53,20 +53,16 @@ describe('Directive: Typeahead', () => {
 
 @Component({
   template: `
-    <input type="text" typeahead [formControl]="stateControl"/>
+    <input type="text" [typeahead]="strategy" [formControl]="stateControl"/>
     <typeahead-items [strategy]="strategy"></typeahead-items>
 `
 })
-class TestComponent implements OnInit {
+class TestComponent {
   stateControl = new FormControl(null, Validators.required);
   strategy: TypeaheadStrategy;
 
   constructor(tb: TypeaheadBuilder) {
     this.strategy = tb.constantList(['foobar', 'foobaz']);
-  }
-
-  ngOnInit(): void {
-    this.stateControl.valueChanges.subscribe(v => this.strategy.setQuery(v));
   }
 }
 
