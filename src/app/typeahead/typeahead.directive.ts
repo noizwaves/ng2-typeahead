@@ -37,7 +37,7 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
 
     this.subscription = this.formControl.valueChanges.subscribe(v => this.strategy.setQuery(v));
 
-    if (!this.elementRef.nativeElement.nextElementSibling) {
+    if (!this.hasItemsComponentAttached()) {
       this.attachItemsComponent();
     }
 
@@ -50,12 +50,19 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
     }
   }
 
+  private hasItemsComponentAttached() {
+    return this.elementRef.nativeElement.nextElementSibling !== null &&
+      this.elementRef.nativeElement.nextElementSibling.tagName === 'TYPEAHEAD-ITEMS';
+  }
+
   private attachItemsComponent() {
+    let originalSibling = this.elementRef.nativeElement.nextElementSibling;
+
     let cf = this.componentFactoryResolver.resolveComponentFactory(TypeaheadItemsComponent);
 
     let componentRef = this.viewContainerRef.createComponent(cf);
     componentRef.instance.strategy = this.strategy;
 
-    this.elementRef.nativeElement.parentElement.insertBefore(componentRef.location.nativeElement, null);
+    this.elementRef.nativeElement.parentElement.insertBefore(componentRef.location.nativeElement, originalSibling);
   }
 }

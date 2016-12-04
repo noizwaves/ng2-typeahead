@@ -20,7 +20,6 @@ describe('Directive: Typeahead', () => {
     TestBed.configureTestingModule({
       declarations: [
         TestComponentWithItems,
-        TestComponentWithoutItems
       ],
       imports: [
         TypeaheadModule,
@@ -70,19 +69,6 @@ describe('Directive: Typeahead', () => {
     page.expectTypeaheadItemsPresent();
     page.expectItemsToEqual([]);
   });
-
-  it('displays items if not explicitly included', () => {
-    fixture = TestBed.createComponent(TestComponentWithoutItems);
-    page = new TestComponentPage(fixture);
-    fixture.detectChanges();
-
-    page.expectTypeaheadItemsPresent();
-
-    page.fillStateInput('foo');
-    fixture.detectChanges();
-
-    page.expectItemsToEqual(['foobar', 'foobaz']);
-  });
 });
 
 @Component({
@@ -100,22 +86,8 @@ class TestComponentWithItems {
   }
 }
 
-@Component({
-  template: `
-    <input type="text" [typeahead]="strategy" [formControl]="stateControl"/>
-`
-})
-class TestComponentWithoutItems {
-  stateControl = new FormControl(null, Validators.required);
-  strategy: TypeaheadStrategy;
-
-  constructor(tb: TypeaheadBuilder) {
-    this.strategy = tb.constantList(['foobar', 'foobaz']);
-  }
-}
-
 class TestComponentPage {
-  constructor(private fixture: ComponentFixture<TestComponentWithItems|TestComponentWithoutItems>) {
+  constructor(private fixture: ComponentFixture<TestComponentWithItems>) {
   }
 
   public fillStateInput(value: string) {

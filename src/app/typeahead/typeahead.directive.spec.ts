@@ -18,6 +18,7 @@ describe('TypeaheadDirective', () => {
       declarations: [
         WithItemsComponent,
         WithoutItemsComponent,
+        WithUnexpectedSiblingComponent,
       ],
       imports: [
         TestModule,
@@ -86,6 +87,25 @@ describe('TypeaheadDirective', () => {
       expect(fixture.nativeElement.children[1].tagName).toBe('TYPEAHEAD-ITEMS');
     });
   });
+
+  describe('input having unexpected sibling', () => {
+    let fixture: ComponentFixture<WithUnexpectedSiblingComponent>;
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(WithUnexpectedSiblingComponent);
+      fixture.detectChanges();
+    });
+
+    it('should insert an "items component" in between', () => {
+      expect(fixture.nativeElement.children[0].tagName).toBe('INPUT');
+
+      expect(fixture.nativeElement.children[1]).not.toBeNull();
+      expect(fixture.nativeElement.children[1].tagName).toBe('TYPEAHEAD-ITEMS');
+
+      expect(fixture.nativeElement.children[2]).not.toBeNull();
+      expect(fixture.nativeElement.children[2].tagName).toBe('DIV');
+    });
+  });
 });
 
 @Component({
@@ -105,6 +125,17 @@ class WithItemsComponent {
 `
 })
 class WithoutItemsComponent {
+  control = new FormControl();
+  strategy = new TypeaheadStrategy([]);
+}
+
+@Component({
+  template: `
+    <input type="text" [typeahead]="strategy" [formControl]="control"/>
+    <div>foobar</div>
+`
+})
+class WithUnexpectedSiblingComponent {
   control = new FormControl();
   strategy = new TypeaheadStrategy([]);
 }
