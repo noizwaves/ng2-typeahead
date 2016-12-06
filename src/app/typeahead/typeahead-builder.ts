@@ -1,9 +1,14 @@
 import {Injectable} from '@angular/core';
-import {TypeaheadStrategy} from './typeahead-strategy';
+import {TypeaheadStrategy, StringsParam, TypeaheadItemsParam} from './typeahead-strategy';
+import {TypeaheadItem} from './typeahead-item.model';
 
 @Injectable()
 export class TypeaheadBuilder {
-  constantList(items: string[]): TypeaheadStrategy {
-    return new TypeaheadStrategy(items);
+  constantArray(items: string[]): TypeaheadStrategy {
+    return new TypeaheadStrategy(new StringsParam(items));
+  }
+
+  constantTypeaheadItems(items: TypeaheadItem[]): TypeaheadStrategy {
+    return new TypeaheadStrategy(new TypeaheadItemsParam(items));
   }
 }

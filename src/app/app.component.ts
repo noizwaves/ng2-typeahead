@@ -15,7 +15,7 @@ export class AppComponent {
 
   constructor(tb: TypeaheadBuilder) {
     this.stateControl = new FormControl();
-    this.stateTypeahead = tb.constantList(usStates());
+    this.stateTypeahead = tb.constantArray(usStates());
   }
 }
 

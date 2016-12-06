@@ -2,7 +2,7 @@ import {FormControl} from '@angular/forms';
 import {Component, NgModule} from '@angular/core';
 import {TestBed, ComponentFixture} from '@angular/core/testing';
 import {TypeaheadDirective} from './typeahead.directive';
-import {TypeaheadStrategy} from './typeahead-strategy';
+import {TypeaheadStrategy, StringsParam} from './typeahead-strategy';
 import {TypeaheadModule} from './typeahead.module';
 import {TypeaheadItemsComponent} from './typeahead-items.component';
 
@@ -116,7 +116,7 @@ describe('TypeaheadDirective', () => {
 })
 class WithItemsComponent {
   control = new FormControl();
-  strategy = new TypeaheadStrategy([]);
+  strategy = new TypeaheadStrategy(new StringsParam([]));
 }
 
 @Component({
@@ -126,7 +126,7 @@ class WithItemsComponent {
 })
 class WithoutItemsComponent {
   control = new FormControl();
-  strategy = new TypeaheadStrategy([]);
+  strategy = new TypeaheadStrategy(new StringsParam([]));
 }
 
 @Component({
@@ -137,5 +137,5 @@ class WithoutItemsComponent {
 })
 class WithUnexpectedSiblingComponent {
   control = new FormControl();
-  strategy = new TypeaheadStrategy([]);
+  strategy = new TypeaheadStrategy(new StringsParam([]));
 }

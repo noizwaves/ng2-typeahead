@@ -83,7 +83,7 @@ class TestComponentWithItems {
   strategy: TypeaheadStrategy;
 
   constructor(tb: TypeaheadBuilder) {
-    this.strategy = tb.constantList(['foobar', 'foobaz']);
+    this.strategy = tb.constantArray(['foobar', 'foobaz']);
   }
 }
 
