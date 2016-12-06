@@ -1,1 +1,1 @@
-export type TypeaheadItem = { value: string, name: string };
+export type TypeaheadItem = { value: any, name: string };

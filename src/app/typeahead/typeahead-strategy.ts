@@ -12,12 +12,17 @@ export class TypeaheadItemsParam {
   }
 }
 
+export class ObjectsParam {
+  constructor(public items: {name: string}[]) {
+  }
+}
+
 export class TypeaheadStrategy {
   private _queries = new Subject<string>();
   private _selectedItem = new Subject<TypeaheadItem>();
   private _items: Observable<TypeaheadItem[]>;
 
-  constructor(allItems: StringsParam|TypeaheadItemsParam) {
+  constructor(allItems: StringsParam|TypeaheadItemsParam|ObjectsParam) {
     let items: TypeaheadItem[] = null;
 
     if (allItems instanceof TypeaheadItemsParam) {
@@ -25,6 +30,10 @@ export class TypeaheadStrategy {
     } else if (allItems instanceof StringsParam) {
       items = allItems.items.map(s => {
         return {name: s, value: s}
+      });
+    } else if (allItems instanceof ObjectsParam) {
+      items = allItems.items.map(item => {
+        return {name: item.name, value: item}
       });
     } else {
       throw 'Unexpected type for `allItems`';

@@ -1,4 +1,4 @@
-import {TypeaheadStrategy, StringsParam, TypeaheadItemsParam} from './typeahead-strategy';
+import {TypeaheadStrategy, StringsParam, TypeaheadItemsParam, ObjectsParam} from './typeahead-strategy';
 import {TypeaheadItem} from './typeahead-item.model';
 
 describe('TypeaheadStrategy', () => {
@@ -27,6 +27,22 @@ describe('TypeaheadStrategy', () => {
       strategy.items.subscribe((items:TypeaheadItem[]) => {
         expect(items).toEqual([
           {name: 'FooBaR', value: 'foobar'},
+        ]);
+
+        done();
+      });
+
+      strategy.setQuery('');
+    });
+  });
+
+  describe('when initialised with an array of objects', () => {
+    it('uses name as name and the object as value', (done) => {
+      let strategy = new TypeaheadStrategy(new ObjectsParam([{id: 1, foo: true, bar: 'baz', name: 'Foobar'}]));
+
+      strategy.items.subscribe((items:TypeaheadItem[]) => {
+        expect(items).toEqual([
+          {name: 'Foobar', value: {id: 1, foo: true, bar: 'baz', name: 'Foobar'}},
         ]);
 
         done();
