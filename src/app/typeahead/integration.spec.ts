@@ -7,7 +7,7 @@ import {TypeaheadBuilder} from './typeahead-builder';
 import {TypeaheadModule} from './typeahead.module';
 import {TypeaheadItemsComponent} from './typeahead-items.component';
 
-describe('Directive: Typeahead', () => {
+describe('Integration spec', () => {
   let fixture: ComponentFixture<TestComponentWithItems>;
   let page: TestComponentPage;
 
@@ -15,7 +15,8 @@ describe('Directive: Typeahead', () => {
     @NgModule({
       entryComponents: [TypeaheadItemsComponent]
     })
-    class TestModule {}
+    class TestModule {
+    }
 
     TestBed.configureTestingModule({
       declarations: [
@@ -48,26 +49,26 @@ describe('Directive: Typeahead', () => {
     page.fillStateInput('foo');
     fixture.detectChanges();
 
-    page.expectItemsToEqual(['foobar', 'foobaz']);
+    page.expectDisplayedNamesToEqual(['foobar', 'foobaz',]);
 
     page.fillStateInput('foobar');
     fixture.detectChanges();
 
-    page.expectItemsToEqual(['foobar']);
+    page.expectDisplayedNamesToEqual(['foobar']);
   });
 
   it('selects a value when item is clicked', () => {
     page.fillStateInput('foo');
     fixture.detectChanges();
 
-    page.clickItemByValue('foobar');
+    page.clickItemByName('foobar');
     fixture.detectChanges();
 
     page.expectHasValidControl();
     page.expectControlHasValue('foobar');
 
     page.expectTypeaheadItemsPresent();
-    page.expectItemsToEqual([]);
+    page.expectDisplayedNamesToEqual([]);
   });
 });
 
@@ -96,15 +97,14 @@ class TestComponentPage {
     inputEl.nativeElement.dispatchEvent(new Event('input'));
   }
 
-  public clickItemByValue(value: string) {
+  public clickItemByName(value: string) {
     let typeaheadItemsEl = this.fixture.debugElement.query(By.css('.typeahead-items'));
     let typeaheadItemEl = typeaheadItemsEl.children
-      .filter((itemEl:DebugElement) => itemEl.nativeElement.textContent === value)[0];
+      .filter((itemEl: DebugElement) => itemEl.nativeElement.textContent === value)[0];
 
     expect(typeaheadItemEl).not.toBeNull();
 
     typeaheadItemEl.nativeElement.click();
-
   }
 
   public expectHasValidControl() {
@@ -122,9 +122,9 @@ class TestComponentPage {
     expect(stateControl.value).toBe(value);
   }
 
-  public expectItemsToEqual(expectedItems: string[]) {
+  public expectDisplayedNamesToEqual(names: string[]) {
     let typeaheadItemsEl = this.fixture.debugElement.query(By.css('.typeahead-items'));
     let items = typeaheadItemsEl.children.map(de => de.nativeElement.textContent);
-    expect(items).toEqual(expectedItems);
+    expect(items).toEqual(names);
   }
 }
