@@ -66,6 +66,7 @@ describe('Integration spec', () => {
 
     page.expectHasValidControl();
     page.expectControlHasValue('foobar');
+    page.expectInputHasValue('foobar');
 
     page.expectTypeaheadItemsPresent();
     page.expectDisplayedNamesToEqual([]);
@@ -120,6 +121,11 @@ class TestComponentPage {
   public expectControlHasValue(value: string) {
     let stateControl = this.fixture.componentInstance.stateControl;
     expect(stateControl.value).toBe(value);
+  }
+
+  public expectInputHasValue(value: string) {
+    let inputEl = this.fixture.debugElement.query(By.css('input'));
+    expect(inputEl.nativeElement.value).toBe(value);
   }
 
   public expectDisplayedNamesToEqual(names: string[]) {
