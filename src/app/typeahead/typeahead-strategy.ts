@@ -12,8 +12,12 @@ export class TypeaheadItemsParam {
   }
 }
 
-export class ObjectsParam {
-  constructor(public items: {name: string}[]) {
+export interface NamedObject {
+  name: string;
+}
+
+export class ObjectsParam<T extends NamedObject> {
+  constructor(public items: T[]) {
   }
 }
 
@@ -22,7 +26,7 @@ export class TypeaheadStrategy {
   private _selectedItem = new Subject<TypeaheadItem>();
   private _items: Observable<TypeaheadItem[]>;
 
-  constructor(allItems: StringsParam|TypeaheadItemsParam|ObjectsParam) {
+  constructor(allItems: StringsParam|TypeaheadItemsParam|ObjectsParam<any>) {
     let items: TypeaheadItem[] = null;
 
     if (allItems instanceof TypeaheadItemsParam) {
