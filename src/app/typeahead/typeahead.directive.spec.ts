@@ -1,4 +1,4 @@
-import {FormControl} from '@angular/forms';
+import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {Component, NgModule} from '@angular/core';
 import {TestBed, ComponentFixture} from '@angular/core/testing';
 import {TypeaheadDirective} from './typeahead.directive';
@@ -23,6 +23,7 @@ describe('TypeaheadDirective', () => {
       ],
       imports: [
         TestModule,
+        ReactiveFormsModule,
         TypeaheadModule,
       ]
     });
@@ -125,10 +126,11 @@ describe('TypeaheadDirective', () => {
       expect(component.control.value).toBe('bar');
     });
 
-    // it('sets the input value to the item name', () => {
-    //   let inputEl = fixture.debugElement.query(By.css('input'));
-    //   expect(inputEl.nativeElement.value).toEqual('bar');
-    // });
+    it('sets the input value to the item name', () => {
+      debugger;
+      let inputEl = fixture.debugElement.query(By.css('input'));
+      expect(inputEl.nativeElement.value).toBe('bar');
+    });
   });
 });
 
