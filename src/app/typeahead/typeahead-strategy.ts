@@ -49,6 +49,14 @@ export class TypeaheadStrategy {
     this._queries.next(query);
   }
 
+  public inputFocused(): void {
+
+  }
+
+  public inputBlurred(): void {
+
+  }
+
   public setValue(item: TypeaheadItem): void {
     this._selectedItem.next(item);
   }

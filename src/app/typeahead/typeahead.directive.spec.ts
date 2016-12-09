@@ -131,6 +131,34 @@ describe('TypeaheadDirective', () => {
       expect(inputEl.nativeElement.value).toBe('Foo');
     });
   });
+
+  describe('focusing on the input', () => {
+    let fixture: ComponentFixture<WithItemsComponent>;
+    let component: WithItemsComponent;
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(WithItemsComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+
+      spyOn(component.strategy, 'inputFocused');
+      spyOn(component.strategy, 'inputBlurred');
+    });
+
+    it('tells the strategy as focus is gained and lost', () => {
+      let inputEl = fixture.debugElement.query(By.css('input'));
+
+      inputEl.nativeElement.dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+
+      expect(component.strategy.inputFocused).toHaveBeenCalled();
+
+      inputEl.nativeElement.dispatchEvent(new Event('blur'));
+      fixture.detectChanges();
+
+      expect(component.strategy.inputBlurred).toHaveBeenCalled();
+    });
+  });
 });
 
 @Component({

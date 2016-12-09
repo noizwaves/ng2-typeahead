@@ -13,7 +13,11 @@ import {Subscription} from 'rxjs/Rx';
 import {TypeaheadItemsComponent} from './typeahead-items.component';
 
 @Directive({
-  selector: '[typeahead]'
+  selector: '[typeahead]',
+  host: {
+    '(focus)': 'onFocus($event)',
+    '(blur)': 'onBlur($event)',
+  }
 })
 export class TypeaheadDirective implements OnInit, OnDestroy {
   @Input('typeahead') strategy: TypeaheadStrategy;
@@ -64,5 +68,13 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
     componentRef.instance.strategy = this.strategy;
 
     this.elementRef.nativeElement.parentElement.insertBefore(componentRef.location.nativeElement, originalSibling);
+  }
+
+  private onFocus(event) {
+    this.strategy.inputFocused();
+  }
+
+  private onBlur(event) {
+    this.strategy.inputBlurred();
   }
 }
