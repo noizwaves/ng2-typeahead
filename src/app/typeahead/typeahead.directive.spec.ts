@@ -5,6 +5,7 @@ import {TypeaheadDirective} from './typeahead.directive';
 import {TypeaheadStrategy, StringsParam} from './typeahead-strategy';
 import {TypeaheadModule} from './typeahead.module';
 import {TypeaheadItemsComponent} from './typeahead-items.component';
+import {By} from '@angular/platform-browser';
 
 describe('TypeaheadDirective', () => {
   beforeEach(() => {
@@ -105,6 +106,29 @@ describe('TypeaheadDirective', () => {
       expect(fixture.nativeElement.children[2]).not.toBeNull();
       expect(fixture.nativeElement.children[2].tagName).toBe('DIV');
     });
+  });
+
+  describe('selecting an item', () => {
+    let fixture: ComponentFixture<WithItemsComponent>;
+    let component: WithItemsComponent;
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(WithItemsComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+
+      component.strategy.setValue({name: 'Foo', value: 'bar'});
+      fixture.detectChanges();
+    });
+
+    it('sets the control value to the item value', () => {
+      expect(component.control.value).toBe('bar');
+    });
+
+    // it('sets the input value to the item name', () => {
+    //   let inputEl = fixture.debugElement.query(By.css('input'));
+    //   expect(inputEl.nativeElement.value).toEqual('bar');
+    // });
   });
 });
 
