@@ -12,11 +12,7 @@ export class TypeaheadItemsParam {
   }
 }
 
-export interface NamedObject {
-  name: string;
-}
-
-export class ObjectsParam<T extends NamedObject> {
+export class ObjectsParam<T extends {label: string}> {
   constructor(public items: T[]) {
   }
 }
@@ -33,18 +29,18 @@ export class TypeaheadStrategy {
       items = allItems.items;
     } else if (allItems instanceof StringsParam) {
       items = allItems.items.map(s => {
-        return {name: s, value: s}
+        return {label: s, value: s}
       });
     } else if (allItems instanceof ObjectsParam) {
       items = allItems.items.map(item => {
-        return {name: item.name, value: item}
+        return {label: item.label, value: item}
       });
     } else {
       throw 'Unexpected type for `allItems`';
     }
 
     this._items = Observable.merge(
-      this._queries.map(q => _.filter(items, (s: TypeaheadItem) => s.name.startsWith(q))),
+      this._queries.map(q => _.filter(items, (s: TypeaheadItem) => s.label.startsWith(q))),
       this._selectedItem.map(() => [])
     );
   }

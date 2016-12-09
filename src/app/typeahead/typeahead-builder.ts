@@ -12,7 +12,7 @@ export class TypeaheadBuilder {
     return new TypeaheadStrategy(new TypeaheadItemsParam(items));
   }
 
-  constantObjects(items: {name: string}[]): TypeaheadStrategy {
+  constantObjects(items: {label: string}[]): TypeaheadStrategy {
     return new TypeaheadStrategy(new ObjectsParam(items));
   }
 }

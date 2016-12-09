@@ -49,19 +49,19 @@ describe('Integration spec', () => {
     page.fillStateInput('foo');
     fixture.detectChanges();
 
-    page.expectDisplayedNamesToEqual(['foobar', 'foobaz',]);
+    page.expectDisplayedLabelsToEqual(['foobar', 'foobaz',]);
 
     page.fillStateInput('foobar');
     fixture.detectChanges();
 
-    page.expectDisplayedNamesToEqual(['foobar']);
+    page.expectDisplayedLabelsToEqual(['foobar']);
   });
 
   it('selects a value when item is clicked', () => {
     page.fillStateInput('foo');
     fixture.detectChanges();
 
-    page.clickItemByName('foobar');
+    page.clickItemByLabel('foobar');
     fixture.detectChanges();
 
     page.expectHasValidControl();
@@ -69,7 +69,7 @@ describe('Integration spec', () => {
     page.expectInputHasValue('foobar');
 
     page.expectTypeaheadItemsPresent();
-    page.expectDisplayedNamesToEqual([]);
+    page.expectDisplayedLabelsToEqual([]);
   });
 });
 
@@ -98,7 +98,7 @@ class TestComponentPage {
     inputEl.nativeElement.dispatchEvent(new Event('input'));
   }
 
-  public clickItemByName(value: string) {
+  public clickItemByLabel(value: string) {
     let typeaheadItemsEl = this.fixture.debugElement.query(By.css('.typeahead-items'));
     let typeaheadItemEl = typeaheadItemsEl.children
       .filter((itemEl: DebugElement) => itemEl.nativeElement.textContent === value)[0];
@@ -128,7 +128,7 @@ class TestComponentPage {
     expect(inputEl.nativeElement.value).toBe(value);
   }
 
-  public expectDisplayedNamesToEqual(names: string[]) {
+  public expectDisplayedLabelsToEqual(names: string[]) {
     let typeaheadItemsEl = this.fixture.debugElement.query(By.css('.typeahead-items'));
     let items = typeaheadItemsEl.children.map(de => de.nativeElement.textContent);
     expect(items).toEqual(names);

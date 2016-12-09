@@ -41,7 +41,7 @@ export class TypeaheadDirective implements OnInit, OnDestroy {
       this.attachItemsComponent();
     }
 
-    this.strategy.selectedItem.subscribe(value => this.formControl.setValue(value.value));
+    this.strategy.selectedItem.subscribe(value => this.formControl.setValue(value.label));
   }
 
   ngOnDestroy(): void {

@@ -6,7 +6,7 @@ import {TypeaheadItem} from './typeahead-item.model';
   selector: 'typeahead-items',
   template: `
     <div class="typeahead-items">
-      <div *ngFor="let item of strategy.items | async" (click)="onItemClick(item)">{{item.name}}</div>
+      <div *ngFor="let item of strategy.items | async" (click)="onItemClick(item)">{{item.label}}</div>
     </div>`,
 
 })

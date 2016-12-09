@@ -118,18 +118,17 @@ describe('TypeaheadDirective', () => {
       component = fixture.componentInstance;
       fixture.detectChanges();
 
-      component.strategy.setValue({name: 'Foo', value: 'bar'});
+      component.strategy.setValue({label: 'Foo', value: 'bar'});
       fixture.detectChanges();
     });
 
     it('sets the control value to the item value', () => {
-      expect(component.control.value).toBe('bar');
+      expect(component.control.value).toBe('Foo');
     });
 
     it('sets the input value to the item name', () => {
-      debugger;
       let inputEl = fixture.debugElement.query(By.css('input'));
-      expect(inputEl.nativeElement.value).toBe('bar');
+      expect(inputEl.nativeElement.value).toBe('Foo');
     });
   });
 });

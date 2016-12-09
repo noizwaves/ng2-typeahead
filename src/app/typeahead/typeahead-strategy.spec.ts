@@ -8,9 +8,9 @@ describe('TypeaheadStrategy', () => {
 
       strategy.items.subscribe((items:TypeaheadItem[]) => {
         expect(items).toEqual([
-          { name: 'foo', value: 'foo'},
-          { name: 'bar', value: 'bar'},
-          { name: 'baz', value: 'baz'},
+          { label: 'foo', value: 'foo'},
+          { label: 'bar', value: 'bar'},
+          { label: 'baz', value: 'baz'},
         ]);
 
         done();
@@ -22,11 +22,11 @@ describe('TypeaheadStrategy', () => {
 
   describe('when initialised with an array of TypeaheadItem', () => {
     it('uses names as names and values as values', (done) => {
-      let strategy = new TypeaheadStrategy(new TypeaheadItemsParam([{name: 'FooBaR', value: 'foobar'}]));
+      let strategy = new TypeaheadStrategy(new TypeaheadItemsParam([{label: 'FooBaR', value: 'foobar'}]));
 
       strategy.items.subscribe((items:TypeaheadItem[]) => {
         expect(items).toEqual([
-          {name: 'FooBaR', value: 'foobar'},
+          {label: 'FooBaR', value: 'foobar'},
         ]);
 
         done();
@@ -38,11 +38,11 @@ describe('TypeaheadStrategy', () => {
 
   describe('when initialised with an array of objects', () => {
     it('uses name as name and the object as value', (done) => {
-      let strategy = new TypeaheadStrategy(new ObjectsParam([{id: 1, foo: true, bar: 'baz', name: 'Foobar'}]));
+      let strategy = new TypeaheadStrategy(new ObjectsParam([{id: 1, foo: true, bar: 'baz', label: 'Foobar'}]));
 
       strategy.items.subscribe((items:TypeaheadItem[]) => {
         expect(items).toEqual([
-          {name: 'Foobar', value: {id: 1, foo: true, bar: 'baz', name: 'Foobar'}},
+          {label: 'Foobar', value: {id: 1, foo: true, bar: 'baz', label: 'Foobar'}},
         ]);
 
         done();
