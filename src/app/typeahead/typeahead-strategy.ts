@@ -20,6 +20,8 @@ export class ObjectsParam<T extends {label: string}> {
 export class TypeaheadStrategy {
   private _queries = new Subject<string>();
   private _selectedItem = new Subject<TypeaheadItem>();
+  private _itemsVisible = new Subject<boolean>();
+
   private _items: Observable<TypeaheadItem[]>;
 
   constructor(allItems: StringsParam|TypeaheadItemsParam|ObjectsParam<any>) {
@@ -50,11 +52,11 @@ export class TypeaheadStrategy {
   }
 
   public inputFocused(): void {
-
+    this._itemsVisible.next(true);
   }
 
   public inputBlurred(): void {
-
+    this._itemsVisible.next(false);
   }
 
   public setValue(item: TypeaheadItem): void {
@@ -63,6 +65,10 @@ export class TypeaheadStrategy {
 
   get items(): Observable<TypeaheadItem[]> {
     return this._items;
+  }
+
+  get itemsVisible(): Observable<boolean> {
+    return this._itemsVisible;
   }
 
   get selectedItem(): Observable<TypeaheadItem> {

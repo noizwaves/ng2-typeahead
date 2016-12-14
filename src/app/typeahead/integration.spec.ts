@@ -36,6 +36,7 @@ describe('Integration spec', () => {
   });
 
   it('accepts any text as input', () => {
+    page.focusStateInput();
     page.fillStateInput('Foobar');
     fixture.detectChanges();
 
@@ -44,8 +45,9 @@ describe('Integration spec', () => {
   });
 
   it('displays a list of filtered matches', () => {
-    page.expectTypeaheadItemsPresent();
+    page.expectTypeaheadItemsAbsent();
 
+    page.focusStateInput();
     page.fillStateInput('foo');
     fixture.detectChanges();
 
@@ -58,6 +60,7 @@ describe('Integration spec', () => {
   });
 
   it('selects a value when item is clicked', () => {
+    page.focusStateInput();
     page.fillStateInput('foo');
     fixture.detectChanges();
 
@@ -92,6 +95,11 @@ class TestComponentPage {
   constructor(private fixture: ComponentFixture<TestComponentWithItems>) {
   }
 
+  public focusStateInput() {
+    let inputEl = this.fixture.debugElement.query(By.css('input'));
+    inputEl.nativeElement.dispatchEvent(new Event('focus'));
+  }
+
   public fillStateInput(value: string) {
     let inputEl = this.fixture.debugElement.query(By.css('input'));
     inputEl.nativeElement.value = value;
@@ -116,6 +124,11 @@ class TestComponentPage {
   public expectTypeaheadItemsPresent() {
     let typeaheadItemsEl = this.fixture.debugElement.query(By.css('.typeahead-items'));
     expect(typeaheadItemsEl.nativeElement).not.toBeNull();
+  }
+
+  public expectTypeaheadItemsAbsent() {
+    let typeaheadItemsEls = this.fixture.debugElement.queryAll(By.css('.typeahead-items'));
+    expect(typeaheadItemsEls.length).toBe(0);
   }
 
   public expectControlHasValue(value: string) {
